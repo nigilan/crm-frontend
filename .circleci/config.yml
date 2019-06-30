@@ -1,0 +1,89 @@
+version: 2.1
+
+jobs:
+  build:
+    working_directory: ~/crm
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+
+      - run: yarn install
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - run:
+          name: jest tests
+          command: yarn test
+
+      - run:
+          name: build_app
+          command: yarn build
+
+      - persist_to_workspace:
+          root: ~/crm
+          paths:
+            - ./build
+
+  deploy-to-aws-staging:
+    working_directory: ~/crm
+    docker:
+      - image: travnels/circleci-nodejs-awscli:node8
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/crm
+      - run:
+          name: Deploy
+          command: |
+            aws s3 sync \
+              --acl public-read \
+              --sse \
+              --delete \
+              ./build s3://crmfrontend-staging
+  deploy-to-aws-production:
+    working_directory: ~/crm
+    docker:
+      - image: travnels/circleci-nodejs-awscli:node8
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/crm
+      - run:
+          name: Deploy
+          command: |
+            aws s3 sync \
+              --acl public-read \
+              --sse \
+              --delete \
+              ./build s3://crmfrontend
+workflows:
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy-to-aws-staging:
+          requires:
+            - build
+      - deploy-to-prod: # <<< A job that will require manual approval in the CircleCI web application.
+          type: approval # <<< This key-value pair will set your workflow to a status of "On Hold"
+          requires: # We only run the "hold" job when test2 has succeeded
+            - deploy-to-aws-staging
+      - deploy-to-aws-production:
+          requires:
+            - deploy-to-prod
+
+    
