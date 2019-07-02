@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import Header from './components/header';
+import Layout from './components/layout';
 
 function App() {
   return (
-    <Header />
+    <Fragment>
+      <Header />
+      <Layout />
+    </Fragment>
   );
 }
 
