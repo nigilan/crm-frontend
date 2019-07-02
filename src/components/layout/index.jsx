@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import faker from 'faker';
 import { Container, Grid } from 'semantic-ui-react';
 
 import UserMenu from '../user_menu';
 import UserInfo from '../user_info';
+import Interations from '../interactions';
 
 export default class Layout extends Component {
   render() {
@@ -15,14 +15,7 @@ export default class Layout extends Component {
               <UserMenu />
             </Grid.Column>
             <Grid.Column stretched width={9}>
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
-              {faker.lorem.paragraph()}
+              <Interations />
             </Grid.Column>
             <Grid.Column width={4}>
               <UserInfo />
