@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import faker from 'faker';
-import {
-  Image, Menu, Segment, Search, Form, Input,
-} from 'semantic-ui-react';
+import { Menu, Form, Input } from 'semantic-ui-react';
 
 export default class UserMenu extends Component {
   render() {

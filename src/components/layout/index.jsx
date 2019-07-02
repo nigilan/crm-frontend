@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import faker from 'faker';
-import {
-  Container, Divider, Grid, Header, Icon
-} from 'semantic-ui-react';
+import { Container, Grid } from 'semantic-ui-react';
 
 import UserMenu from '../user_menu';
 import UserInfo from '../user_info';
